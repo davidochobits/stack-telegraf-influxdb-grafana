@@ -1,0 +1,61 @@
+version: "3.4"
+
+services:
+  telegraf:
+    image: telegraf:1.4.0
+    hostname: "{{.Node.ID}}"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    configs:
+      - source: telegraf.conf
+        target: /etc/telegraf/telegraf.conf
+    networks:
+       - metrics
+    deploy:
+      mode: global
+
+  influxdb:
+    image: influxdb
+    ports:
+      - 8086:8086
+      - 8083:8083
+      - 8090:8090
+    configs:
+      - source: influxdb.conf
+        target: /etc/influxdb/influxdb.conf
+    volumes:
+      - influxdb:/var/lib/influxdb
+    networks:
+      - metrics
+    deploy:
+      placement:
+        constraints:
+          - node.labels.influxdb == true
+
+  grafana:
+    image: grafana/grafana:4.5.2
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana:/var/lib/grafana
+    networks:
+      - metrics
+    depends_on:
+      - influxdb
+    deploy:
+      placement:
+        constraints:
+          - node.labels.grafana == true
+
+configs:
+  telegraf.conf:
+    file: ./telegraf/telegraf.conf
+  influxdb.conf:
+    file: ./influxdb/influxdb.conf
+
+networks:
+  metrics:
+    external: true
+volumes:
+  influxdb:
+  grafana:

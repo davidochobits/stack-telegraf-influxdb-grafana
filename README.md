@@ -3,7 +3,7 @@ Stack for Docker with Telegraf, Influxdb and Grafana
 
 This stack is an adaptation of the one shown in this entry: https://wmartins.github.io/2017/10/creating-a-monitoring-stack-with-docker-swarm-grafana-influxdb-and-telegraf/ Thanks in advance to William Martins for his work
 
-Previous requirements
+<h3>Previous requirements</h3>
 
 The stack has been tested in a Stack with three nodes, a manager and two worker, using Docker Swarm. 
 
